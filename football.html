@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>有一天，央视解说员齐聚一堂</title>
+	<style>
+		ul{list-style: none;padding:0;margin:0;}/*reset*/
+		#datalist{border:1px solid #ddd;padding:15px;}
+		#datalist li{padding:5px;border-bottom:1px dotted #ccc;}
+		#datalist ul{display: none;}
+		#page span{display:inline-block;margin:5px;width:40px;line-height:1.8;text-align: center;background-color:#dfdfdf;color:#666;}
+		#page span.active{background-color:#fc0;color:#fff;}
+	</style>
+	<script src="js/jquery-1.12.0.js"></script>
+	<script>
+		//	var $page = $('#page');
+//	
+//	var index = 1;
+//	
+//	ajax ();
+	
+	// 绑定分页点击事件
+//	$page.on('click', 'span', function () {
+//		
+//		index = $(this).text();
+//		
+//		$(this).addClass('active').siblings().removeClass('active');
+//		$('.list-'+index).show().siblings().hide();
+//		
+//		var len = $('.list-'+index).children('li').length;
+//		
+//		// 以分页的文本和ul是否为空作为判断条件
+//		if (index != 1 && len <=0 ){
+//			ajax ();
+//		}		
+//		
+//	})
+	
+	// 封装ajax调用
+//	function ajax () {
+//		$.ajax({
+//			'url': 'json/football' + index + '.json',
+//			'dataType': 'json',
+//			'success': function (data) {
+//				var d = data.data;
+//				
+//				// 只有第一次加载才需要分页
+//				if(index == 1){
+//					// 分页的处理
+//					var pageNum = Math.ceil(data.total/data.pageCount);
+//					
+//					for(var i=1;i<=pageNum; i++){
+//						$('<span/>').html(i).appendTo($page);
+//					}
+//					// 第一个分页高亮
+//					$page.children('span').eq(0).addClass('active')
+//				}
+//				
+//				// 循环数据得到每个对象
+//				var _html = '';
+//				$.each(d, function (idx, ele) {
+//					_html += '<li>';
+//					_html += '<strong>' + ele.name + '</strong> ' + ele.content;
+//					_html += '</li>';
+//				})
+//				
+//				// 对应的容器塞数据
+//				$('.list-'+index).append(_html).show();
+//			}
+//		})
+//	}
+	</script>
+	
+</head>
+<body>
+	<h1>有一天，央视解说员齐聚一堂</h1>
+	<div id="datalist">
+		<ul class="list-1"></ul>
+		<ul class="list-2"></ul>
+		<ul class="list-3"></ul>
+		<ul class="list-4"></ul>
+		<ul class="list-5"></ul>
+	</div>
+	<div id="page"></div>
+</body>
+<script>
+$(function () {
+
+	// 获取元素
+	var $page = $('#page');
+	var $datalist = $('#datalist');
+	
+	var index = 1;  //初始索引
+	
+	//初始化
+	ajax();
+	
+	// 绑定分页的点击事件
+	$page.on('click', 'span', function () {
+		index = $(this).text();
+		
+		$(this).addClass('active').siblings().removeClass('active');
+		$('.list-'+index).show().siblings().hide();
+		
+		var len = $('.list-'+index).children('li').length;
+		
+		if (index != 1 && len <= 0) {
+			ajax ();
+		}
+	})
+	
+	// 封装ajax函数
+	function ajax () {
+		$.ajax({
+			url: 'json/football' + index + '.json',
+			success: function (data) {
+				var d = data.data;
+				
+				// 第一次加载的时候出现分页
+				if(index == 1) {
+					var page = Math.ceil(data.total / data.pageCount)
+					
+					for(var j=1; j<=page; j++) {
+		//				$page.append('<span>'+j+'</span>');
+						$('<span/>').html(j).appendTo($page);
+					}
+					
+					$page.children('span').eq(0).addClass('active');
+				
+				}
+				
+				var html = '';
+				for(var i=0; i<d.length; i++){
+					html += '<li><b>' + d[i].name + '</b> ' + d[i].content + '</li>';
+				}
+				
+				console.log(html);
+				
+				$('.list-'+index).append(html).show();
+			}
+		})
+	
+	}
+	
+	
+})
+</script>
+</html>
